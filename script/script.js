@@ -26,18 +26,18 @@ showTypeOf(income);
 showTypeOf(deposit);
 showTypeOf(mission);
 
-function getExpensesMonth (amount1, amount2) {
+let getExpensesMonth = function (amount1, amount2) {
     return amount1 + amount2;
-}
+};
 
-function getAccumulatedMonth (monthlyIncome, expensesMonth) {
+let getAccumulatedMonth = function (monthlyIncome, expensesMonth) {
     return monthlyIncome - expensesMonth;
-}
+};
 
 let expensesMonth = getExpensesMonth(amount1, amount2);
 let accumulatedMonth = getAccumulatedMonth(money, expensesMonth);
 
-function getTargetMonth (mission , accumulatedMonth) {
+let getTargetMonth = function (mission , accumulatedMonth) {
     return Math.ceil(mission % accumulatedMonth);
 }
 
