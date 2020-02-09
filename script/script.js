@@ -42,10 +42,6 @@ let appData = {
     percentDeposit: 0,
     moneyDeposit: 0,
     start: function() {
-        if (salaryAmount.value === '') {
-            alert('Ошибка, поле "Месячный доход" должно быть заполнено!');
-            return;
-        }
         appData.budget = Number(salaryAmount.value);
 
         appData.getExpenses();
@@ -179,11 +175,6 @@ availableOrUnavailableButton();
 salaryAmount.addEventListener('input', availableOrUnavailableButton);
 
 console.log(appData);
-/*if (appData.getTargetMonth() > 0) {
-    console.log('Цель будет достигнута через', appData.getTargetMonth());
-} else {
-    console.log('Цель не будет достигнута');
-}*/
 
 
 
