@@ -48,6 +48,10 @@ let appData = {
         additionalIncomeItem[1].readOnly = true;
         targetAmount.readOnly = true;
         additionalExpensesItem.readOnly = true;
+        periodSelect.disabled = true;
+        buttonIncomeAdd.disabled = true;
+        buttonExpensesAdd.disabled = true;
+
         incomeItems.forEach(function (item) {
             item.querySelector('.income-title').readOnly = true;
             item.querySelector('.income-amount').readOnly = true; 
@@ -74,6 +78,9 @@ let appData = {
         additionalIncomeItem[1].readOnly = false;
         targetAmount.readOnly = false;
         additionalExpensesItem.readOnly = false;
+        periodSelect.disabled = false;
+        buttonIncomeAdd.disabled = false;
+        buttonExpensesAdd.disabled = false;
         incomeItems.forEach(function (item) {
             item.querySelector('.income-title').readOnly = false;
             item.querySelector('.income-amount').readOnly = false; 
@@ -119,6 +126,8 @@ let appData = {
         this.deposit = false;
         this.percentDeposit = 0;
         this.moneyDeposit = 0;
+
+        availableOrUnavailableButton();
     },
     addExpensesBlock: function () {
         let cloneExpensesItem = expensesItems[0].cloneNode(true);
@@ -228,36 +237,29 @@ let appData = {
     },
 };
 
-calculate.addEventListener('click', function() {
-    calculate.style.display = 'none';
-    reset.style.display = 'block';
-    appData.start();
-});
-
-reset.addEventListener('click', function () {
-    reset.style.display = 'none';
-    calculate.style.display = 'block';
-    appData.reset();
-});
-
-buttonExpensesAdd.addEventListener('click', appData.addExpensesBlock);
-buttonIncomeAdd.addEventListener('click', appData.addIncomeBlock);
-
-
-
-
-
-
-
-periodSelect.addEventListener('input', function () {
-    periodAmount.innerHTML = periodSelect.value;
-});
-
 const availableOrUnavailableButton = function () {
     calculate.disabled = !salaryAmount.value ? true : false;
 };
 availableOrUnavailableButton();
 salaryAmount.addEventListener('input', availableOrUnavailableButton);
+
+calculate.addEventListener('click', function() {
+    calculate.style.display = 'none';
+    reset.style.display = 'block';
+    appData.start();
+});
+reset.addEventListener('click', function () {
+    reset.style.display = 'none';
+    calculate.style.display = 'block';
+    appData.reset();
+});
+buttonExpensesAdd.addEventListener('click', appData.addExpensesBlock);
+buttonIncomeAdd.addEventListener('click', appData.addIncomeBlock);
+periodSelect.addEventListener('input', function () {
+    periodAmount.innerHTML = periodSelect.value;
+});
+
+
 
 
 
