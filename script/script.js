@@ -28,6 +28,12 @@ let periodAmount = document.querySelector('.period-amount');
 const isNumber = function(n) {
     return !isNaN( parseFloat( n ) ) && isFinite(n);
 };
+const checkForOutputOnlyCyrillic = function (str) {
+    str.value = str.value.replace(/[^а-яА-ЯёЁ ,\-]/g, '');
+};
+const checkForOutputOnlyNumbers = function (num) {
+    num.value = num.value.replace(/[^\d]/g, '');
+};
 
 let appData = {
     budget: 0,
@@ -43,26 +49,9 @@ let appData = {
     percentDeposit: 0,
     moneyDeposit: 0,
     start: function() {
-        salaryAmount.readOnly = true;
-        additionalIncomeItem[0].readOnly = true;
-        additionalIncomeItem[1].readOnly = true;
-        targetAmount.readOnly = true;
-        additionalExpensesItem.readOnly = true;
-        periodSelect.disabled = true;
-        buttonIncomeAdd.disabled = true;
-        buttonExpensesAdd.disabled = true;
-
-        incomeItems.forEach(function (item) {
-            item.querySelector('.income-title').readOnly = true;
-            item.querySelector('.income-amount').readOnly = true; 
-        });
-        expensesItems.forEach( (item) => {
-            item.querySelector('.expenses-title').readOnly = true;
-            item.querySelector('.expenses-amount').readOnly = true;  
-        });
-
         this.budget = Number(salaryAmount.value);
-
+        
+        this.dataEntryLock();
         this.getExpenses();
         this.getIncome();
         this.getExpensesMonth();
@@ -72,7 +61,25 @@ let appData = {
 
         this.showResult();
     },
-    reset: function() {
+    dataEntryLock: function() {
+        salaryAmount.readOnly = true;
+        additionalIncomeItem[0].readOnly = true;
+        additionalIncomeItem[1].readOnly = true;
+        targetAmount.readOnly = true;
+        additionalExpensesItem.readOnly = true;
+        periodSelect.disabled = true;
+        buttonIncomeAdd.disabled = true;
+        buttonExpensesAdd.disabled = true;
+        incomeItems.forEach(function (item) {
+            item.querySelector('.income-title').readOnly = true;
+            item.querySelector('.income-amount').readOnly = true; 
+        });
+        expensesItems.forEach( (item) => {
+            item.querySelector('.expenses-title').readOnly = true;
+            item.querySelector('.expenses-amount').readOnly = true;  
+        });
+    }, 
+    unlockDataEntry: function() {
         salaryAmount.readOnly = false;
         additionalIncomeItem[0].readOnly = false;
         additionalIncomeItem[1].readOnly = false;
@@ -89,7 +96,8 @@ let appData = {
             item.querySelector('.expenses-title').readOnly = false;
             item.querySelector('.expenses-amount').readOnly = false;  
         });
-
+    },
+    clearingDataFromInputFields: function() {
         salaryAmount.value = '';
         additionalIncomeItem[0].value = '';
         additionalIncomeItem[1].value = '';
@@ -105,7 +113,8 @@ let appData = {
             item.querySelector('.expenses-title').value = '';
             item.querySelector('.expenses-amount').value = '';  
         });
-
+    },
+    deletingDataInTheOutputField: function(){
         budgetMonthValue.value = '';
         budgetDayValue.value = '';
         expensesMonthValue.value = '';
@@ -114,6 +123,8 @@ let appData = {
         incomePeriodValue.value = '';
         targetMonthValue.value = '';
 
+    },
+    zeroingAllObjectVariables: function(){
         this.budget = 0;
         this.budgetDay = 0;
         this.budgetMonth = 0;
@@ -126,7 +137,12 @@ let appData = {
         this.deposit = false;
         this.percentDeposit = 0;
         this.moneyDeposit = 0;
-
+    },
+    reset: function() {
+        this.unlockDataEntry();
+        this.clearingDataFromInputFields();
+        this.deletingDataInTheOutputField();
+        this.zeroingAllObjectVariables();
         availableOrUnavailableButton();
     },
     addExpensesBlock: function () {
@@ -236,7 +252,7 @@ let appData = {
         return this.budgetMonth * periodSelect.value;
     },
 };
-
+/* Блокировка или разблокировка кнопки */
 const availableOrUnavailableButton = function () {
     calculate.disabled = !salaryAmount.value ? true : false;
 };
@@ -258,9 +274,20 @@ buttonIncomeAdd.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('input', function () {
     periodAmount.innerHTML = periodSelect.value;
 });
-
-
-
-
+salaryAmount.addEventListener('input', function () {
+    checkForOutputOnlyNumbers(salaryAmount);
+});
+additionalIncomeItem[0].addEventListener('input', function () {
+    checkForOutputOnlyCyrillic(additionalIncomeItem[0]);
+});
+additionalIncomeItem[1].addEventListener('input', function () {
+    checkForOutputOnlyCyrillic(additionalIncomeItem[1]);
+});
+additionalExpensesItem.addEventListener('input', function () {
+    checkForOutputOnlyCyrillic(additionalExpensesItem);
+});
+targetAmount.addEventListener('input', function () {
+    checkForOutputOnlyNumbers(targetAmount);
+});
 
 
