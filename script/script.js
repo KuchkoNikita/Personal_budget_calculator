@@ -1,29 +1,29 @@
 'use strict';
 
-let calculate = document.querySelector('#start');
-let reset = document.querySelector('#cancel');
-let buttonIncomeAdd = document.querySelector('.income_add');
-let buttonExpensesAdd = document.querySelector('.expenses_add');
-let additionalIncomeItem = document.querySelectorAll('.additional_income-item');
-let budgetMonthValue = document.querySelector('.budget_month-value');
-let budgetDayValue = document.querySelector('.budget_day-value');
-let expensesMonthValue = document.querySelector('.expenses_month-value');
-let additionalIncomeValue = document.querySelector('.additional_income-value');
-let additionalExpensesValue = document.querySelector('.additional_expenses-value');
-let incomePeriodValue = document.querySelector('.income_period-value');
-let targetMonthValue = document.querySelector('.target_month-value');
-let salaryAmount = document.querySelector('.salary-amount');
-let incomeTitle = document.querySelector('.income-title');
+const calculate = document.querySelector('#start');
+const reset = document.querySelector('#cancel');
+const buttonIncomeAdd = document.querySelector('.income_add');
+const buttonExpensesAdd = document.querySelector('.expenses_add');
+const additionalIncomeItem = document.querySelectorAll('.additional_income-item');
+const budgetMonthValue = document.querySelector('.budget_month-value');
+const budgetDayValue = document.querySelector('.budget_day-value');
+const expensesMonthValue = document.querySelector('.expenses_month-value');
+const additionalIncomeValue = document.querySelector('.additional_income-value');
+const additionalExpensesValue = document.querySelector('.additional_expenses-value');
+const incomePeriodValue = document.querySelector('.income_period-value');
+const targetMonthValue = document.querySelector('.target_month-value');
+const salaryAmount = document.querySelector('.salary-amount');
+const incomeTitle = document.querySelector('.income-title');
 let incomeItems = document.querySelectorAll('.income-items');
-let expensesTitle = document.querySelector('.expenses-title');
+const expensesTitle = document.querySelector('.expenses-title');
 let expensesItems = document.querySelectorAll('.expenses-items');
-let additionalExpensesItem = document.querySelector('.additional_expenses-item');
-let depositCheck = document.querySelector('.deposit-check');
-let depositAmount = document.querySelector('.deposit-amount');
-let depositPercent = document.querySelector('.deposit-percent');
-let targetAmount = document.querySelector('.target-amount');
-let periodSelect = document.querySelector('.period-select');
-let periodAmount = document.querySelector('.period-amount');
+const additionalExpensesItem = document.querySelector('.additional_expenses-item');
+const depositCheck = document.querySelector('.deposit-check');
+const depositAmount = document.querySelector('.deposit-amount');
+const depositPercent = document.querySelector('.deposit-percent');
+const targetAmount = document.querySelector('.target-amount');
+const periodSelect = document.querySelector('.period-select');
+const periodAmount = document.querySelector('.period-amount');
 
 const isNumber = (n) => {
     return !isNaN( parseFloat( n ) ) && isFinite(n);
@@ -68,7 +68,6 @@ AppData.prototype.dataEntryLock = function() {
     additionalIncomeItem[1].readOnly = true;
     targetAmount.readOnly = true;
     additionalExpensesItem.readOnly = true;
-    //periodSelect.disabled = true;
     buttonIncomeAdd.disabled = true;
     buttonExpensesAdd.disabled = true;
     incomeItems.forEach( (item) => {
@@ -155,7 +154,7 @@ AppData.prototype.addExpensesBlock = function () {
 };
 AppData.prototype.addPeriodBlock = function () {
     periodAmount.innerHTML = periodSelect.value;
-    incomePeriodValue.value = this.calcSavedMoney(); // appData
+    incomePeriodValue.value = appData.calcSavedMoney(); // appData
 };
 AppData.prototype.getExpenses = function () {
     expensesItems.forEach( (item) => {
