@@ -13,9 +13,11 @@ const additionalExpensesValue = document.querySelector('.additional_expenses-val
 const incomePeriodValue = document.querySelector('.income_period-value');
 const targetMonthValue = document.querySelector('.target_month-value');
 const salaryAmount = document.querySelector('.salary-amount');
-const incomeTitle = document.querySelector('.income-title');
+let expensesAmount = document.querySelectorAll('.expenses-amount');  
+let incomeAmount = document.querySelectorAll('.income-amount');
+let incomeTitle = document.querySelectorAll('.income-title');
 let incomeItems = document.querySelectorAll('.income-items');
-const expensesTitle = document.querySelector('.expenses-title');
+let expensesTitle = document.querySelectorAll('.expenses-title');
 let expensesItems = document.querySelectorAll('.expenses-items');
 const additionalExpensesItem = document.querySelector('.additional_expenses-item');
 const depositCheck = document.querySelector('.deposit-check');
@@ -149,6 +151,8 @@ class AppData {
         let cloneExpensesItem = expensesItems[0].cloneNode(true);
         expensesItems[0].parentNode.insertBefore(cloneExpensesItem, buttonExpensesAdd);
         expensesItems = document.querySelectorAll('.expenses-items');
+        inputCheckExpensesTitles();
+        inputCheckExpensesAmounts();
         if (expensesItems.length === 6) {
             buttonExpensesAdd.style.display = 'none';
         }
@@ -170,6 +174,8 @@ class AppData {
         let cloneIncomesItem = incomeItems[0].cloneNode(true);
         incomeItems[0].parentNode.insertBefore(cloneIncomesItem, buttonIncomeAdd);
         incomeItems = document.querySelectorAll('.income-items');
+        inputCheckIncomeTitles();
+        inputCheckExpensesAmounts();
         if (incomeItems.length === 6) {
             buttonIncomeAdd.style.display = 'none';
         }
@@ -289,6 +295,46 @@ class AppData {
     }
 }
 const appData = new AppData();
+
+const inputCheckIncomeTitles = () => {
+    incomeTitle = document.querySelectorAll('.income-title');
+    incomeTitle.forEach( (element) => {
+        element.addEventListener('input', (event) => {
+            checkForOutputOnlyCyrillic(event.target);
+        });
+    });
+};
+
+const inputCheckExpensesTitles = () => {
+    expensesTitle = document.querySelectorAll('.expenses-title');
+    expensesTitle.forEach( (element) => {
+        element.addEventListener('input', (event) => {
+            checkForOutputOnlyCyrillic(event.target);
+        });
+    });
+};
+
+const inputCheckExpensesAmounts = () => {
+    expensesAmount = document.querySelectorAll('.expenses-amount');  
+    expensesAmount.forEach( (element) => {
+        element.addEventListener('input', (event) => {
+            checkForOutputOnlyNumbers(event.target);
+        });
+    });
+};
+
+const inputCheckIncomeAmounts = () => {
+    incomeAmount = document.querySelectorAll('.income-amount');
+    incomeAmount.forEach( (element) => {
+        element.addEventListener('input', (event) => {
+            checkForOutputOnlyNumbers(event.target);
+        });
+    });
+};
+inputCheckIncomeTitles();
+inputCheckExpensesTitles();
+inputCheckExpensesAmounts();
+inputCheckIncomeAmounts();
 
 appData.availableOrUnavailableButton();
 appData.eventsListeners();
