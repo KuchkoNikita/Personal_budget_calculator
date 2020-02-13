@@ -261,7 +261,14 @@ class AppData {
         const valueSelect = this.value;
         console.log('valueSelect: ', valueSelect);
         if ( valueSelect === 'other' ) {
-            // WORK
+            depositPercent.value = '';
+            depositPercent.style.display = 'inline-block';
+            depositPercent.disabled = false;
+            depositPercent.value = valueSelect;
+            if (depositPercent.value < 100 && depositPercent.value < 0) {
+                alert ("Введите корректное значение в поле проценты");
+                calculate.disabled = false;
+            }
         } else {
             depositPercent.value = valueSelect;
         }
