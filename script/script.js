@@ -20,9 +20,10 @@ let incomeItems = document.querySelectorAll('.income-items');
 let expensesTitle = document.querySelectorAll('.expenses-title');
 let expensesItems = document.querySelectorAll('.expenses-items');
 const additionalExpensesItem = document.querySelector('.additional_expenses-item');
-const depositCheck = document.querySelector('.deposit-check');
+const depositCheck = document.querySelector('#deposit-check');
 const depositAmount = document.querySelector('.deposit-amount');
 const depositPercent = document.querySelector('.deposit-percent');
+const depositBank = document.querySelector('.deposit-bank');
 const targetAmount = document.querySelector('.target-amount');
 const periodSelect = document.querySelector('.period-select');
 const periodAmount = document.querySelector('.period-amount');
@@ -61,6 +62,7 @@ class AppData {
         this.getExpensesMonth();
         this.getAddExpenses();
         this.getAddIncome();
+        this.getInfoDeposit();
         this.getBudget();
     
         this.showResult();
@@ -145,14 +147,14 @@ class AppData {
         this.clearingDataFromInputFields();
         this.deletingDataInTheOutputField();
         this.zeroingAllObjectVariables();
-        availableOrUnavailableButton();
+        this.availableOrUnavailableButton();
     }
     addExpensesBlock() {
         let cloneExpensesItem = expensesItems[0].cloneNode(true);
         expensesItems[0].parentNode.insertBefore(cloneExpensesItem, buttonExpensesAdd);
         expensesItems = document.querySelectorAll('.expenses-items');
-        inputCheckExpensesTitles();
-        inputCheckExpensesAmounts();
+        appData.inputCheckExpensesTitles();
+        appData.inputCheckExpensesAmounts();
         if (expensesItems.length === 6) {
             buttonExpensesAdd.style.display = 'none';
         }
@@ -174,8 +176,8 @@ class AppData {
         let cloneIncomesItem = incomeItems[0].cloneNode(true);
         incomeItems[0].parentNode.insertBefore(cloneIncomesItem, buttonIncomeAdd);
         incomeItems = document.querySelectorAll('.income-items');
-        inputCheckIncomeTitles();
-        inputCheckExpensesAmounts();
+        appData.inputCheckIncomeTitles();
+        appData.inputCheckIncomeAmounts();
         if (incomeItems.length === 6) {
             buttonIncomeAdd.style.display = 'none';
         }
@@ -227,7 +229,8 @@ class AppData {
         }
     }
     getBudget() {
-        this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth;
+        const monthDeposit = this.moneyDeposit * this.percentDeposit;
+        this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth + monthDeposit;
         this.budgetDay = Math.floor( this.budgetMonth / 30 );
     }
     getTargetMonth() {
@@ -245,20 +248,70 @@ class AppData {
         }
     }
     getInfoDeposit() {
-        if ( this.deposit ) {
-            do {
-                this.percentDeposit = prompt('Какой годовой процент?', 10);
-            } while ( !isNumber( this.percentDeposit ) );
-            do {
-                this.moneyDeposit = prompt('Какая сумма заложенна?', 1000);
-            } while ( !isNumber( this.moneyDeposit ) );
-        }
+        this.percentDeposit = depositPercent.value;
+        this.moneyDeposit = depositAmount.value;
     }
     calcSavedMoney() {
         return this.budgetMonth * periodSelect.value;
     }
-    availableOrUnavailableButton () {
+    availableOrUnavailableButton() {
         calculate.disabled = !salaryAmount.value ? true : false;
+    }
+    changePercent() {
+        const valueSelect = this.value;
+        console.log('valueSelect: ', valueSelect);
+        if ( valueSelect === 'other' ) {
+            // WORK
+        } else {
+            depositPercent.value = valueSelect;
+        }
+    }
+    depositHandler() {
+        if (depositCheck.checked) {
+            depositBank.style.display = 'inline-block';
+            depositAmount.style.display = 'inline-block';
+            this.deposit = true;
+            depositBank.addEventListener('change', appData.changePercent);
+        } else {
+            depositBank.style.display = 'none';
+            depositAmount.style.display = 'none';
+            depositBank.value = '';
+            depositAmount.value = '';
+            this.deposit = false;
+            depositBank.removeEventListener('change', appData.changePercent);
+        }
+    }
+    inputCheckIncomeTitles() {
+        incomeTitle = document.querySelectorAll('.income-title');
+        incomeTitle.forEach( (element) => {
+            element.addEventListener('input', (event) => {
+                checkForOutputOnlyCyrillic(event.target);
+            });
+        });
+    }
+    inputCheckExpensesTitles() {
+        expensesTitle = document.querySelectorAll('.expenses-title');
+        expensesTitle.forEach( (element) => {
+            element.addEventListener('input', (event) => {
+                checkForOutputOnlyCyrillic(event.target);
+            });
+        });
+    }
+    inputCheckExpensesAmounts() {
+        expensesAmount = document.querySelectorAll('.expenses-amount');  
+        expensesAmount.forEach( (element) => {
+            element.addEventListener('input', (event) => {
+                checkForOutputOnlyNumbers(event.target);
+            });
+        });
+    }
+    inputCheckIncomeAmounts() {
+        incomeAmount = document.querySelectorAll('.income-amount');
+        incomeAmount.forEach( (element) => {
+            element.addEventListener('input', (event) => {
+                checkForOutputOnlyNumbers(event.target);
+            });
+        });
     }
     eventsListeners() {
         salaryAmount.addEventListener('input', this.availableOrUnavailableButton);
@@ -272,6 +325,7 @@ class AppData {
             calculate.style.display = 'block';
             this.reset();
         });
+        depositCheck.addEventListener('change', this.depositHandler);
         buttonExpensesAdd.addEventListener('click', this.addExpensesBlock);
         buttonIncomeAdd.addEventListener('click', this.addIncomeBlock);
         periodSelect.addEventListener('input', () => {
@@ -296,45 +350,11 @@ class AppData {
 }
 const appData = new AppData();
 
-const inputCheckIncomeTitles = () => {
-    incomeTitle = document.querySelectorAll('.income-title');
-    incomeTitle.forEach( (element) => {
-        element.addEventListener('input', (event) => {
-            checkForOutputOnlyCyrillic(event.target);
-        });
-    });
-};
+appData.inputCheckIncomeTitles();
+appData.inputCheckIncomeAmounts();
+appData.inputCheckExpensesTitles();
+appData.inputCheckExpensesAmounts();
 
-const inputCheckExpensesTitles = () => {
-    expensesTitle = document.querySelectorAll('.expenses-title');
-    expensesTitle.forEach( (element) => {
-        element.addEventListener('input', (event) => {
-            checkForOutputOnlyCyrillic(event.target);
-        });
-    });
-};
-
-const inputCheckExpensesAmounts = () => {
-    expensesAmount = document.querySelectorAll('.expenses-amount');  
-    expensesAmount.forEach( (element) => {
-        element.addEventListener('input', (event) => {
-            checkForOutputOnlyNumbers(event.target);
-        });
-    });
-};
-
-const inputCheckIncomeAmounts = () => {
-    incomeAmount = document.querySelectorAll('.income-amount');
-    incomeAmount.forEach( (element) => {
-        element.addEventListener('input', (event) => {
-            checkForOutputOnlyNumbers(event.target);
-        });
-    });
-};
-inputCheckIncomeTitles();
-inputCheckExpensesTitles();
-inputCheckExpensesAmounts();
-inputCheckIncomeAmounts();
 
 appData.availableOrUnavailableButton();
 appData.eventsListeners();
