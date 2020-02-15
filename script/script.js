@@ -38,6 +38,13 @@ const checkForOutputOnlyNumbers = (num) => {
     num.value = num.value.replace(/[^\d]/g, '');
 };
 
+/*const checkForOutputOnlyRightPercentage = (num) => {
+    num.value = num.value.replace(/[^\d]/g, '');
+    if (num.value > 99) {
+        num.value = '';
+    }
+};*/
+
 class AppData {
     constructor() {
         this.budget = 0;
@@ -246,14 +253,17 @@ class AppData {
     changePercent() {
         const valueSelect = this.value;
         if ( valueSelect === 'other' ) {
-            depositPercent.value = '';
             depositPercent.style.display = 'inline-block';
             depositPercent.disabled = false;
             depositPercent.value = valueSelect;
-            if (depositPercent.value < 100 && depositPercent.value < 0) {
-                alert ("Введите корректное значение в поле проценты");
-                calculate.disabled = false;
-            }
+            depositPercent.value = '';
+            //depositPercent.addEventListener('input', checkForOutputOnlyRightPercentage(depositPercent));
+            depositPercent.addEventListener('input', () => {
+                depositPercent.value = depositPercent.value.replace(/[^\d]/g, '');
+                if (depositPercent.value > 99) {
+                    depositPercent.value = '';
+                }
+            });
         } else {
             depositPercent.style.display = 'none';
             depositPercent.value = valueSelect;
@@ -263,6 +273,7 @@ class AppData {
         if (depositCheck.checked) {
             depositBank.style.display = 'inline-block';
             depositAmount.style.display = 'inline-block';
+            depositBank.value = '';
             this.deposit = true;
             depositBank.addEventListener('change', appData.changePercent);
         } else {
