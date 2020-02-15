@@ -38,12 +38,12 @@ const checkForOutputOnlyNumbers = (num) => {
     num.value = num.value.replace(/[^\d]/g, '');
 };
 
-/*const checkForOutputOnlyRightPercentage = (num) => {
+const checkForOutputOnlyRightPercentage = (num) => {
     num.value = num.value.replace(/[^\d]/g, '');
     if (num.value > 99) {
         num.value = '';
     }
-};*/
+};
 
 class AppData {
     constructor() {
@@ -257,12 +257,8 @@ class AppData {
             depositPercent.disabled = false;
             depositPercent.value = valueSelect;
             depositPercent.value = '';
-            //depositPercent.addEventListener('input', checkForOutputOnlyRightPercentage(depositPercent));
             depositPercent.addEventListener('input', () => {
-                depositPercent.value = depositPercent.value.replace(/[^\d]/g, '');
-                if (depositPercent.value > 99) {
-                    depositPercent.value = '';
-                }
+                checkForOutputOnlyRightPercentage(depositPercent);
             });
         } else {
             depositPercent.style.display = 'none';
