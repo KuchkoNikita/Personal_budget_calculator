@@ -67,6 +67,8 @@ class AppData {
         this.getExpensesAndIncome();
         this.getExpensesMonth();
         this.addExpensesAndIncomeBlock();
+        this.getAddExpenses();
+        this.getAddIncome();
         this.getInfoDeposit();
         this.getBudget();
     
