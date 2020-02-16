@@ -1,10 +1,45 @@
 'use strict';
+/* Input */
+/* Месячный доход */
+const salaryAmount = document.querySelector('.salary-amount');
 
+/* Дополнительный доход */
+let incomeAmount = document.querySelectorAll('.income-amount');
+let incomeTitle = document.querySelectorAll('.income-title');
+let incomeItems = document.querySelectorAll('.income-items');
+const buttonIncomeAdd = document.querySelector('.income_add');
+
+/* Возможный доход */
+const additionalIncomeItem = document.querySelectorAll('.additional_income-item');
+
+/* Обязательные расходы */
+let expensesAmount = document.querySelectorAll('.expenses-amount');  
+let expensesTitle = document.querySelectorAll('.expenses-title');
+let expensesItems = document.querySelectorAll('.expenses-items');
+const buttonExpensesAdd = document.querySelector('.expenses_add');
+
+/* Возможные расходы */
+const additionalExpensesItem = document.querySelector('.additional_expenses-item');
+
+/* Депозит */
+const depositCheck = document.querySelector('#deposit-check');
+const depositAmount = document.querySelector('.deposit-amount');
+const depositPercent = document.querySelector('.deposit-percent');
+const depositBank = document.querySelector('.deposit-bank');
+
+/* Цель */
+const targetAmount = document.querySelector('.target-amount');
+
+/* Период расчета */
+const periodSelect = document.querySelector('.period-select');
+const periodAmount = document.querySelector('.period-amount');
+
+/* Кнопки */
 const calculate = document.querySelector('#start');
 const reset = document.querySelector('#cancel');
-const buttonIncomeAdd = document.querySelector('.income_add');
-const buttonExpensesAdd = document.querySelector('.expenses_add');
-const additionalIncomeItem = document.querySelectorAll('.additional_income-item');
+
+/* Output */
+
 const budgetMonthValue = document.querySelector('.budget_month-value');
 const budgetDayValue = document.querySelector('.budget_day-value');
 const expensesMonthValue = document.querySelector('.expenses_month-value');
@@ -12,21 +47,6 @@ const additionalIncomeValue = document.querySelector('.additional_income-value')
 const additionalExpensesValue = document.querySelector('.additional_expenses-value');
 const incomePeriodValue = document.querySelector('.income_period-value');
 const targetMonthValue = document.querySelector('.target_month-value');
-const salaryAmount = document.querySelector('.salary-amount');
-let expensesAmount = document.querySelectorAll('.expenses-amount');  
-let incomeAmount = document.querySelectorAll('.income-amount');
-let incomeTitle = document.querySelectorAll('.income-title');
-let incomeItems = document.querySelectorAll('.income-items');
-let expensesTitle = document.querySelectorAll('.expenses-title');
-let expensesItems = document.querySelectorAll('.expenses-items');
-const additionalExpensesItem = document.querySelector('.additional_expenses-item');
-const depositCheck = document.querySelector('#deposit-check');
-const depositAmount = document.querySelector('.deposit-amount');
-const depositPercent = document.querySelector('.deposit-percent');
-const depositBank = document.querySelector('.deposit-bank');
-const targetAmount = document.querySelector('.target-amount');
-const periodSelect = document.querySelector('.period-select');
-const periodAmount = document.querySelector('.period-amount');
 
 const isNumber = (n) => {
     return !isNaN( parseFloat(n) ) && isFinite(n);
@@ -60,9 +80,41 @@ class AppData {
         this.percentDeposit = 0;
         this.moneyDeposit = 0;
     }
+    /*localStorageСheck() {
+        if (localStorage.getItem('budget')) {
+            this.budget = JSON.parse(localStorage.getItem('budget'));
+            this.budgetDay = JSON.parse(localStorage.getItem('budgetDay'));
+            this.budgetMonth = JSON.parse(localStorage.getItem('budgetMonth'));
+            this.expensesMonth = JSON.parse(localStorage.getItem('expensesMonth'));
+            this.income = JSON.parse(localStorage.getItem('income'));
+            this.incomeMonth = JSON.parse(localStorage.getItem('incomeMonth'));
+            this.addIncome = JSON.parse(localStorage.getItem('addIncome'));
+            this.expenses = JSON.parse(localStorage.getItem('expenses'));
+            this.addExpenses = JSON.parse(localStorage.getItem('addExpenses'));
+            this.deposit = JSON.parse(localStorage.getItem('deposit'));
+            this.percentDeposit = JSON.parse(localStorage.getItem('percentDeposit'));
+            this.moneyDeposit = JSON.parse(localStorage.getItem('moneyDeposit'));
+
+            fillingFieldsWithDataLocalStorage();
+        }
+    }
+    fillingFieldsWithDataLocalStorage() {
+        salaryAmount.value = this.budget;
+        budgetDayValue.value = this.budgetDay;
+        budgetMonthValue.value = this.budgetMonth;
+        expensesMonthValue.value = this.expensesMonth;
+        //income.value = this.income;
+        //incomeMonth.value = this.incomeMonth;
+        //addIncome.value = this.addIncome;
+        //expenses.value = this.expenses;
+        depositAmount.value = this.moneyDeposit;
+        additionalExpensesValue.value = this.addExpenses;
+        depositBank.value = this.deposit;
+        depositPercent.value = this.percentDeposit;
+    }
     addingAppDataItemsToLocalStorage() {
         localStorage.setItem('budget', JSON.stringify(this.budget));
-        localStorage.setItem('budgetDay', JSON.stringify(this.budgbudgetDayet));
+        localStorage.setItem('budgetDay', JSON.stringify(this.budgetDay));
         localStorage.setItem('budgetMonth', JSON.stringify(this.budgetMonth));
         localStorage.setItem('expensesMonth', JSON.stringify(this.expensesMonth));
         localStorage.setItem('income', JSON.stringify(this.income));
@@ -87,9 +139,10 @@ class AppData {
         localStorage.removeItem('deposit');
         localStorage.removeItem('percentDeposit');
         localStorage.removeItem('moneyDeposit');
-    }
+    }*/
     start() {
         this.budget = Number(salaryAmount.value);
+        
         this.dataEntryLock();
         this.getExpensesAndIncome();
         this.getExpensesMonth();
@@ -97,9 +150,9 @@ class AppData {
         this.getAddIncome();
         this.getInfoDeposit();
         this.getBudget();
-    
+
         this.showResult();
-        this.addingAppDataItemsToLocalStorage();
+        //this.addingAppDataItemsToLocalStorage();
     }
     dataEntryLock() {
         salaryAmount.readOnly = true;
@@ -184,7 +237,7 @@ class AppData {
         this.zeroingAllObjectVariables();
         this.availableOrUnavailableButton();
 
-        this.deleteAppDataItemsInLocalStorage();
+        //this.deleteAppDataItemsInLocalStorage();
     }
     addPeriodBlock() {
         periodAmount.innerHTML = periodSelect.value;
@@ -346,7 +399,16 @@ class AppData {
         });
     }
     eventsListeners() {
+        //this.localStorageСheck();
+
+        this.inputCheckIncomeTitles();
+        this.inputCheckIncomeAmounts();
+        this.inputCheckExpensesTitles();
+        this.inputCheckExpensesAmounts();
+        this.availableOrUnavailableButton();
+
         salaryAmount.addEventListener('input', this.availableOrUnavailableButton);
+        
         calculate.addEventListener('click', () => {
             calculate.style.display = 'none';
             reset.style.display = 'block';
@@ -357,27 +419,35 @@ class AppData {
             calculate.style.display = 'block';
             this.reset();
         });
+        
         depositCheck.addEventListener('change', this.depositHandler);
+        
         buttonExpensesAdd.addEventListener('click', this.addExpensesAndIncomeBlock);
         buttonIncomeAdd.addEventListener('click', this.addExpensesAndIncomeBlock);
+        
         periodSelect.addEventListener('input', () => {
             periodAmount.innerHTML = periodSelect.value;
         });
+        
         salaryAmount.addEventListener('input', () => {
             checkForOutputOnlyNumbers(salaryAmount);
         });
+        
         additionalIncomeItem[0].addEventListener('input', () => {
             checkForOutputOnlyCyrillic(additionalIncomeItem[0]);
         });
         additionalIncomeItem[1].addEventListener('input', () => {
             checkForOutputOnlyCyrillic(additionalIncomeItem[1]);
         });
+        
         additionalExpensesItem.addEventListener('input', () => {
             checkForOutputOnlyCyrillic(additionalExpensesItem);
         });
+        
         targetAmount.addEventListener('input', () => {
             checkForOutputOnlyNumbers(targetAmount);
         });
+        
         depositAmount.addEventListener('input', () => {
             checkForOutputOnlyNumbers(depositAmount);
         });
@@ -388,12 +458,5 @@ class AppData {
 }
 const appData = new AppData();
 
-appData.inputCheckIncomeTitles();
-appData.inputCheckIncomeAmounts();
-appData.inputCheckExpensesTitles();
-appData.inputCheckExpensesAmounts();
-
-
-appData.availableOrUnavailableButton();
 appData.eventsListeners();
 
