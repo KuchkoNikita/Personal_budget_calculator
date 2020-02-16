@@ -48,6 +48,10 @@ const additionalExpensesValue = document.querySelector('.additional_expenses-val
 const incomePeriodValue = document.querySelector('.income_period-value');
 const targetMonthValue = document.querySelector('.target_month-value');
 
+{
+
+}
+
 const isNumber = (n) => {
     return !isNaN( parseFloat(n) ) && isFinite(n);
 };
@@ -80,66 +84,6 @@ class AppData {
         this.percentDeposit = 0;
         this.moneyDeposit = 0;
     }
-    /*localStorageСheck() {
-        if (localStorage.getItem('budget')) {
-            this.budget = JSON.parse(localStorage.getItem('budget'));
-            this.budgetDay = JSON.parse(localStorage.getItem('budgetDay'));
-            this.budgetMonth = JSON.parse(localStorage.getItem('budgetMonth'));
-            this.expensesMonth = JSON.parse(localStorage.getItem('expensesMonth'));
-            this.income = JSON.parse(localStorage.getItem('income'));
-            this.incomeMonth = JSON.parse(localStorage.getItem('incomeMonth'));
-            this.addIncome = JSON.parse(localStorage.getItem('addIncome'));
-            this.expenses = JSON.parse(localStorage.getItem('expenses'));
-            this.addExpenses = JSON.parse(localStorage.getItem('addExpenses'));
-            this.deposit = JSON.parse(localStorage.getItem('deposit'));
-            this.percentDeposit = JSON.parse(localStorage.getItem('percentDeposit'));
-            this.moneyDeposit = JSON.parse(localStorage.getItem('moneyDeposit'));
-
-            fillingFieldsWithDataLocalStorage();
-        }
-    }
-    fillingFieldsWithDataLocalStorage() {
-        salaryAmount.value = this.budget;
-        budgetDayValue.value = this.budgetDay;
-        budgetMonthValue.value = this.budgetMonth;
-        expensesMonthValue.value = this.expensesMonth;
-        //income.value = this.income;
-        //incomeMonth.value = this.incomeMonth;
-        //addIncome.value = this.addIncome;
-        //expenses.value = this.expenses;
-        depositAmount.value = this.moneyDeposit;
-        additionalExpensesValue.value = this.addExpenses;
-        depositBank.value = this.deposit;
-        depositPercent.value = this.percentDeposit;
-    }
-    addingAppDataItemsToLocalStorage() {
-        localStorage.setItem('budget', JSON.stringify(this.budget));
-        localStorage.setItem('budgetDay', JSON.stringify(this.budgetDay));
-        localStorage.setItem('budgetMonth', JSON.stringify(this.budgetMonth));
-        localStorage.setItem('expensesMonth', JSON.stringify(this.expensesMonth));
-        localStorage.setItem('income', JSON.stringify(this.income));
-        localStorage.setItem('incomeMonth', JSON.stringify(this.incomeMonth));
-        localStorage.setItem('addIncome', JSON.stringify(this.addIncome));
-        localStorage.setItem('expenses', JSON.stringify(this.expenses));
-        localStorage.setItem('addExpenses', JSON.stringify(this.addExpenses));
-        localStorage.setItem('deposit', JSON.stringify(this.deposit));
-        localStorage.setItem('percentDeposit', JSON.stringify(this.percentDeposit));
-        localStorage.setItem('moneyDeposit', JSON.stringify(this.moneyDeposit));
-    }
-    deleteAppDataItemsInLocalStorage() {
-        localStorage.removeItem('budget');
-        localStorage.removeItem('budgetDay');
-        localStorage.removeItem('budgetMonth');
-        localStorage.removeItem('expensesMonth');
-        localStorage.removeItem('income');
-        localStorage.removeItem('incomeMonth');
-        localStorage.removeItem('addIncome');
-        localStorage.removeItem('expenses');
-        localStorage.removeItem('addExpenses');
-        localStorage.removeItem('deposit');
-        localStorage.removeItem('percentDeposit');
-        localStorage.removeItem('moneyDeposit');
-    }*/
     start() {
         this.budget = Number(salaryAmount.value);
         
@@ -152,7 +96,6 @@ class AppData {
         this.getBudget();
 
         this.showResult();
-        //this.addingAppDataItemsToLocalStorage();
     }
     dataEntryLock() {
         salaryAmount.readOnly = true;
@@ -236,8 +179,6 @@ class AppData {
         this.deletingDataInTheOutputField();
         this.zeroingAllObjectVariables();
         this.availableOrUnavailableButton();
-
-        //this.deleteAppDataItemsInLocalStorage();
     }
     addPeriodBlock() {
         periodAmount.innerHTML = periodSelect.value;
@@ -258,20 +199,20 @@ class AppData {
             this.incomeMonth += Number(this.income[key]);
         }
     }
-    addExpensesAndIncomeBlock() {
-        const count = (passedItems, buttonAdd) => {
-            let passedStr = passedItems[0].className.split('-')[0];
-            let cloneItem = passedItems[0].cloneNode(true);
-            passedItems[0].parentNode.insertBefore(cloneItem, buttonAdd);
-            passedItems = document.querySelectorAll(`.${passedStr}-items`);
-            appData.inputCheckExpensesTitles();
-            appData.inputCheckExpensesAmounts();
-            if (passedItems.length === 6) {
-                buttonAdd.style.display = 'none';
-            }
-        };
-        count(expensesItems, buttonExpensesAdd);
-        count(incomeItems, buttonIncomeAdd);
+    addExpensesAndIncomeBlock(passedItems, buttonAdd) {
+        let passedStr = passedItems[0].className.split('-')[0];
+        let cloneItem = passedItems[0].cloneNode(true);
+        
+        passedItems[0].parentNode.insertBefore(cloneItem, buttonAdd);
+        passedItems = document.querySelectorAll(`.${passedStr}-items`);
+        
+        this.inputCheckIncomeTitles();
+        this.inputCheckIncomeAmounts();
+        this.inputCheckExpensesTitles();
+        this.inputCheckExpensesAmounts();
+        if (passedItems.length === 6) {
+            buttonAdd.style.display = 'none';
+        }
     }
     getAddExpenses() {
         let addExpenses = additionalExpensesItem.value.split(',');
@@ -374,6 +315,14 @@ class AppData {
             });
         });
     }
+    inputCheckIncomeAmounts() {
+        incomeAmount = document.querySelectorAll('.income-amount');
+        incomeAmount.forEach( (element) => {
+            element.addEventListener('input', (event) => {
+                checkForOutputOnlyNumbers(event.target);
+            });
+        });
+    }
     inputCheckExpensesTitles() {
         expensesTitle = document.querySelectorAll('.expenses-title');
         expensesTitle.forEach( (element) => {
@@ -390,21 +339,12 @@ class AppData {
             });
         });
     }
-    inputCheckIncomeAmounts() {
-        incomeAmount = document.querySelectorAll('.income-amount');
-        incomeAmount.forEach( (element) => {
-            element.addEventListener('input', (event) => {
-                checkForOutputOnlyNumbers(event.target);
-            });
-        });
-    }
     eventsListeners() {
-        //this.localStorageСheck();
-
         this.inputCheckIncomeTitles();
         this.inputCheckIncomeAmounts();
         this.inputCheckExpensesTitles();
         this.inputCheckExpensesAmounts();
+        
         this.availableOrUnavailableButton();
 
         salaryAmount.addEventListener('input', this.availableOrUnavailableButton);
@@ -422,8 +362,12 @@ class AppData {
         
         depositCheck.addEventListener('change', this.depositHandler);
         
-        buttonExpensesAdd.addEventListener('click', this.addExpensesAndIncomeBlock);
-        buttonIncomeAdd.addEventListener('click', this.addExpensesAndIncomeBlock);
+        buttonExpensesAdd.addEventListener('click', () => {
+            this.addExpensesAndIncomeBlock(expensesItems, buttonExpensesAdd);
+        });
+        buttonIncomeAdd.addEventListener('click', () => {
+            this.addExpensesAndIncomeBlock(incomeItems, buttonIncomeAdd);
+        });
         
         periodSelect.addEventListener('input', () => {
             periodAmount.innerHTML = periodSelect.value;
