@@ -29,7 +29,7 @@ const periodSelect = document.querySelector('.period-select');
 const periodAmount = document.querySelector('.period-amount');
 
 const isNumber = (n) => {
-    return !isNaN( parseFloat( n ) ) && isFinite(n);
+    return !isNaN( parseFloat(n) ) && isFinite(n);
 };
 const checkForOutputOnlyCyrillic = (str) => {
     str.value = str.value.replace(/[^а-яА-ЯёЁ ,\-]/g, '');
@@ -60,19 +60,46 @@ class AppData {
         this.percentDeposit = 0;
         this.moneyDeposit = 0;
     }
+    addingAppDataItemsToLocalStorage() {
+        localStorage.setItem('budget', JSON.stringify(this.budget));
+        localStorage.setItem('budgetDay', JSON.stringify(this.budgbudgetDayet));
+        localStorage.setItem('budgetMonth', JSON.stringify(this.budgetMonth));
+        localStorage.setItem('expensesMonth', JSON.stringify(this.expensesMonth));
+        localStorage.setItem('income', JSON.stringify(this.income));
+        localStorage.setItem('incomeMonth', JSON.stringify(this.incomeMonth));
+        localStorage.setItem('addIncome', JSON.stringify(this.addIncome));
+        localStorage.setItem('expenses', JSON.stringify(this.expenses));
+        localStorage.setItem('addExpenses', JSON.stringify(this.addExpenses));
+        localStorage.setItem('deposit', JSON.stringify(this.deposit));
+        localStorage.setItem('percentDeposit', JSON.stringify(this.percentDeposit));
+        localStorage.setItem('moneyDeposit', JSON.stringify(this.moneyDeposit));
+    }
+    deleteAppDataItemsInLocalStorage() {
+        localStorage.removeItem('budget');
+        localStorage.removeItem('budgetDay');
+        localStorage.removeItem('budgetMonth');
+        localStorage.removeItem('expensesMonth');
+        localStorage.removeItem('income');
+        localStorage.removeItem('incomeMonth');
+        localStorage.removeItem('addIncome');
+        localStorage.removeItem('expenses');
+        localStorage.removeItem('addExpenses');
+        localStorage.removeItem('deposit');
+        localStorage.removeItem('percentDeposit');
+        localStorage.removeItem('moneyDeposit');
+    }
     start() {
         this.budget = Number(salaryAmount.value);
-        
         this.dataEntryLock();
         this.getExpensesAndIncome();
         this.getExpensesMonth();
-        this.addExpensesAndIncomeBlock();
         this.getAddExpenses();
         this.getAddIncome();
         this.getInfoDeposit();
         this.getBudget();
     
         this.showResult();
+        this.addingAppDataItemsToLocalStorage();
     }
     dataEntryLock() {
         salaryAmount.readOnly = true;
@@ -133,7 +160,8 @@ class AppData {
         additionalExpensesValue.value = '';
         incomePeriodValue.value = '';
         targetMonthValue.value = '';
-    
+        depositPercent.value = '';
+        depositAmount.value = '';
     }
     zeroingAllObjectVariables() {
         this.budget = 0;
@@ -155,6 +183,8 @@ class AppData {
         this.deletingDataInTheOutputField();
         this.zeroingAllObjectVariables();
         this.availableOrUnavailableButton();
+
+        this.deleteAppDataItemsInLocalStorage();
     }
     addPeriodBlock() {
         periodAmount.innerHTML = periodSelect.value;
