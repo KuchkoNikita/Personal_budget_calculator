@@ -69,6 +69,20 @@ const checkForOutputOnlyRightPercentage = (num) => {
     }
 };
 
+let appDataLocalStorage = { // Обьект
+    budgetMonthValueLocalStorage: '',
+    budgetDayValueLocalStorage: '',
+    expensesMonthValueLocalStorage: '',
+    additionalIncomeValueLocalStorage: '',
+    additionalExpensesValueLocalStorage: '',
+    incomePeriodValueLocalStorage: '',
+    targetMonthValueLocalStorage: '',
+};
+
+if (localStorage.getItem('appDataLocalStorage')) { // Проверка на наличие
+    appDataLocalStorage = JSON.parse(localStorage.getItem('appDataLocalStorage'));
+}
+
 class AppData {
     constructor() {
         this.budget = 0;
@@ -96,6 +110,18 @@ class AppData {
         this.getBudget();
 
         this.showResult();
+    }
+    dataUpdateToLocalStorage() { // Создание LS
+        localStorage.setItem('appDataLocalStorage', JSON.stringify(appDataLocalStorage));
+    }
+    equateElementsAppDataToAppDataLocalStorage() { // Приравнивание элементов
+        appDataLocalStorage.budgetDayValueLocalStorage = budgetDayValue;
+        appDataLocalStorage.budgetMonthValueLocalStorage = budgetMonthValue;
+        appDataLocalStorage.expensesMonthValueLocalStorage = expensesMonthValue;
+        appDataLocalStorage.additionalIncomeValueLocalStorage = additionalIncomeValue;
+        appDataLocalStorage.additionalExpensesValueLocalStorage = additionalExpensesValue;
+        appDataLocalStorage.incomePeriodValueLocalStorage = incomePeriodValue;
+        appDataLocalStorage.targetMonthValueLocalStorage = targetMonthValue;
     }
     dataEntryLock() {
         salaryAmount.readOnly = true;
@@ -147,6 +173,8 @@ class AppData {
             item.querySelector('.expenses-title').value = '';
             item.querySelector('.expenses-amount').value = '';  
         });
+        depositPercent.value = '';
+        depositAmount.value = '';
     }
     deletingDataInTheOutputField() {
         budgetMonthValue.value = '';
@@ -156,8 +184,6 @@ class AppData {
         additionalExpensesValue.value = '';
         incomePeriodValue.value = '';
         targetMonthValue.value = '';
-        depositPercent.value = '';
-        depositAmount.value = '';
     }
     zeroingAllObjectVariables() {
         this.budget = 0;
