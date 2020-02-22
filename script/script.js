@@ -150,6 +150,7 @@ let appDataLocalStorage = { // Обьект
     additionalExpensesValueLocalStorage: '',
     incomePeriodValueLocalStorage: '',
     targetMonthValueLocalStorage: '',
+    periodSelectLocalStorage: '',
 };
 
 const equateLocaleStorageToAppData = () => { // Присванивание элементов обьекта к значения 
@@ -160,6 +161,9 @@ const equateLocaleStorageToAppData = () => { // Присванивание эл�
     additionalExpensesValue.value = appDataLocalStorage.additionalExpensesValueLocalStorage; 
     incomePeriodValue.value = appDataLocalStorage.incomePeriodValueLocalStorage;
     targetMonthValue.value = appDataLocalStorage.targetMonthValueLocalStorage;
+    periodSelect.value = appDataLocalStorage.periodSelectLocalStorage;
+
+    periodAmount.innerHTML = periodSelect.value;
 };
 
 const equateAppDataToLocalStorage = () => { // Приравнивание значений к элементам обьекта
@@ -170,14 +174,20 @@ const equateAppDataToLocalStorage = () => { // Приравнивание зна
     appDataLocalStorage.additionalExpensesValueLocalStorage = additionalExpensesValue.value;
     appDataLocalStorage.incomePeriodValueLocalStorage = incomePeriodValue.value;
     appDataLocalStorage.targetMonthValueLocalStorage = targetMonthValue.value;
+    appDataLocalStorage.periodSelectLocalStorage = periodSelect.value;
+};
+
+const pageLockAndElementOutputs = () => {
+    equateLocaleStorageToAppData();
+    dataEntryLock();
+    periodSelect.disabled = true;
+    reset.style.display = 'block';
+    calculate.style.display = 'none';
 };
 
 if (localStorage.getItem('appDataLocalStorage')) { // Проверка на наличие
     appDataLocalStorage = JSON.parse(localStorage.getItem('appDataLocalStorage'));
-    equateLocaleStorageToAppData();
-    dataEntryLock();
-    reset.style.display = 'block';
-    calculate.style.display = 'none';
+    pageLockAndElementOutputs();
 }
 
 const appDataUpdateToLocalStorage = () => { // Создание LS
@@ -416,6 +426,8 @@ class AppData {
         });
         reset.addEventListener('click', () => {
             appDataDeleteLocalStorage();
+            periodSelect.disabled = false;
+
             reset.style.display = 'none';
             calculate.style.display = 'block';
             this.reset();
