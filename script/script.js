@@ -22,6 +22,7 @@ const buttonExpensesAdd = document.querySelector('.expenses_add');
 const additionalExpensesItem = document.querySelector('.additional_expenses-item');
 
 /* Депозит */
+const depositCheckmark = document.querySelector('.deposit-checkmark'); // !
 const depositCheck = document.querySelector('#deposit-check');
 const depositAmount = document.querySelector('.deposit-amount');
 const depositPercent = document.querySelector('.deposit-percent');
@@ -48,10 +49,6 @@ const additionalExpensesValue = document.querySelector('.additional_expenses-val
 const incomePeriodValue = document.querySelector('.income_period-value');
 const targetMonthValue = document.querySelector('.target_month-value');
 
-{
-
-}
-
 const isNumber = (n) => {
     return !isNaN( parseFloat(n) ) && isFinite(n);
 };
@@ -69,6 +66,82 @@ const checkForOutputOnlyRightPercentage = (num) => {
     }
 };
 
+const dataEntryLock = () => {
+    salaryAmount.readOnly = true;
+    additionalIncomeItem[0].readOnly = true;
+    additionalIncomeItem[1].readOnly = true;
+    targetAmount.readOnly = true;
+    additionalExpensesItem.readOnly = true;
+    buttonIncomeAdd.disabled = true;
+    buttonExpensesAdd.disabled = true;
+    
+    depositBank.disabled = true;
+    depositAmount.readOnly = true;
+    depositPercent.readOnly = true;
+    
+    incomeItems.forEach( (item) => {
+        item.querySelector('.income-title').readOnly = true;
+        item.querySelector('.income-amount').readOnly = true; 
+    });
+    expensesItems.forEach( (item) => {
+        item.querySelector('.expenses-title').readOnly = true;
+        item.querySelector('.expenses-amount').readOnly = true;  
+    });
+};
+
+const unlockDataEntry = () => {
+    salaryAmount.readOnly = false;
+    additionalIncomeItem[0].readOnly = false;
+    additionalIncomeItem[1].readOnly = false;
+    targetAmount.readOnly = false;
+    additionalExpensesItem.readOnly = false;
+    buttonIncomeAdd.disabled = false;
+    buttonExpensesAdd.disabled = false;
+    
+    depositBank.disabled = false;
+    depositAmount.readOnly = false;
+    depositPercent.readOnly = false;
+
+    incomeItems.forEach( (item) => {
+        item.querySelector('.income-title').readOnly = false;
+        item.querySelector('.income-amount').readOnly = false; 
+    });
+    expensesItems.forEach( (item) => {
+        item.querySelector('.expenses-title').readOnly = false;
+        item.querySelector('.expenses-amount').readOnly = false;  
+    });
+};
+
+const clearingDataFromInputFields = () => {
+    salaryAmount.value = '';
+    additionalIncomeItem[0].value = '';
+    additionalIncomeItem[1].value = '';
+    targetAmount.value = '';
+    additionalExpensesItem.value = '';
+    periodSelect.value = 1;
+    periodAmount.innerHTML = periodSelect.value;
+    incomeItems.forEach( (item) => {
+        item.querySelector('.income-title').value = '';
+        item.querySelector('.income-amount').value = ''; 
+    });
+    expensesItems.forEach( (item) => {
+        item.querySelector('.expenses-title').value = '';
+        item.querySelector('.expenses-amount').value = '';  
+    });
+    depositPercent.value = '';
+    depositAmount.value = '';
+};
+
+const deletingDataInTheOutputField = () => {
+    budgetMonthValue.value = '';
+    budgetDayValue.value = '';
+    expensesMonthValue.value = '';
+    additionalIncomeValue.value = '';
+    additionalExpensesValue.value = '';
+    incomePeriodValue.value = '';
+    targetMonthValue.value = '';
+};
+
 let appDataLocalStorage = { // Обьект
     budgetMonthValueLocalStorage: '',
     budgetDayValueLocalStorage: '',
@@ -79,9 +152,41 @@ let appDataLocalStorage = { // Обьект
     targetMonthValueLocalStorage: '',
 };
 
+const equateLocaleStorageToAppData = () => { // Присванивание элементов обьекта к значения 
+    budgetDayValue.value = appDataLocalStorage.budgetDayValueLocalStorage;
+    budgetMonthValue.value = appDataLocalStorage.budgetMonthValueLocalStorage;
+    expensesMonthValue.value = appDataLocalStorage.expensesMonthValueLocalStorage;
+    additionalIncomeValue.value = appDataLocalStorage.additionalIncomeValueLocalStorage; 
+    additionalExpensesValue.value = appDataLocalStorage.additionalExpensesValueLocalStorage; 
+    incomePeriodValue.value = appDataLocalStorage.incomePeriodValueLocalStorage;
+    targetMonthValue.value = appDataLocalStorage.targetMonthValueLocalStorage;
+};
+
+const equateAppDataToLocalStorage = () => { // Приравнивание значений к элементам обьекта
+    appDataLocalStorage.budgetDayValueLocalStorage = budgetDayValue.value;
+    appDataLocalStorage.budgetMonthValueLocalStorage = budgetMonthValue.value;
+    appDataLocalStorage.expensesMonthValueLocalStorage = expensesMonthValue.value;
+    appDataLocalStorage.additionalIncomeValueLocalStorage = additionalIncomeValue.value;
+    appDataLocalStorage.additionalExpensesValueLocalStorage = additionalExpensesValue.value;
+    appDataLocalStorage.incomePeriodValueLocalStorage = incomePeriodValue.value;
+    appDataLocalStorage.targetMonthValueLocalStorage = targetMonthValue.value;
+};
+
 if (localStorage.getItem('appDataLocalStorage')) { // Проверка на наличие
     appDataLocalStorage = JSON.parse(localStorage.getItem('appDataLocalStorage'));
+    equateLocaleStorageToAppData();
+    dataEntryLock();
+    reset.style.display = 'block';
+    calculate.style.display = 'none';
 }
+
+const appDataUpdateToLocalStorage = () => { // Создание LS
+    localStorage.setItem('appDataLocalStorage', JSON.stringify(appDataLocalStorage));
+};
+
+const appDataDeleteLocalStorage = () =>  { // Удаление
+    localStorage.removeItem('appDataLocalStorage');
+};
 
 class AppData {
     constructor() {
@@ -101,7 +206,7 @@ class AppData {
     start() {
         this.budget = Number(salaryAmount.value);
         
-        this.dataEntryLock();
+        dataEntryLock();
         this.getExpensesAndIncome();
         this.getExpensesMonth();
         this.getAddExpenses();
@@ -110,80 +215,9 @@ class AppData {
         this.getBudget();
 
         this.showResult();
-    }
-    dataUpdateToLocalStorage() { // Создание LS
-        localStorage.setItem('appDataLocalStorage', JSON.stringify(appDataLocalStorage));
-    }
-    equateElementsAppDataToAppDataLocalStorage() { // Приравнивание элементов
-        appDataLocalStorage.budgetDayValueLocalStorage = budgetDayValue;
-        appDataLocalStorage.budgetMonthValueLocalStorage = budgetMonthValue;
-        appDataLocalStorage.expensesMonthValueLocalStorage = expensesMonthValue;
-        appDataLocalStorage.additionalIncomeValueLocalStorage = additionalIncomeValue;
-        appDataLocalStorage.additionalExpensesValueLocalStorage = additionalExpensesValue;
-        appDataLocalStorage.incomePeriodValueLocalStorage = incomePeriodValue;
-        appDataLocalStorage.targetMonthValueLocalStorage = targetMonthValue;
-    }
-    dataEntryLock() {
-        salaryAmount.readOnly = true;
-        additionalIncomeItem[0].readOnly = true;
-        additionalIncomeItem[1].readOnly = true;
-        targetAmount.readOnly = true;
-        additionalExpensesItem.readOnly = true;
-        buttonIncomeAdd.disabled = true;
-        buttonExpensesAdd.disabled = true;
-        incomeItems.forEach( (item) => {
-            item.querySelector('.income-title').readOnly = true;
-            item.querySelector('.income-amount').readOnly = true; 
-        });
-        expensesItems.forEach( (item) => {
-            item.querySelector('.expenses-title').readOnly = true;
-            item.querySelector('.expenses-amount').readOnly = true;  
-        });
-    }
-    unlockDataEntry() {
-        salaryAmount.readOnly = false;
-        additionalIncomeItem[0].readOnly = false;
-        additionalIncomeItem[1].readOnly = false;
-        targetAmount.readOnly = false;
-        additionalExpensesItem.readOnly = false;
-        buttonIncomeAdd.disabled = false;
-        buttonExpensesAdd.disabled = false;
-        incomeItems.forEach( (item) => {
-            item.querySelector('.income-title').readOnly = false;
-            item.querySelector('.income-amount').readOnly = false; 
-        });
-        expensesItems.forEach( (item) => {
-            item.querySelector('.expenses-title').readOnly = false;
-            item.querySelector('.expenses-amount').readOnly = false;  
-        });
-    }
-    clearingDataFromInputFields() {
-        salaryAmount.value = '';
-        additionalIncomeItem[0].value = '';
-        additionalIncomeItem[1].value = '';
-        targetAmount.value = '';
-        additionalExpensesItem.value = '';
-        periodSelect.value = 1;
-        periodAmount.innerHTML = periodSelect.value;
-        incomeItems.forEach( (item) => {
-            item.querySelector('.income-title').value = '';
-            item.querySelector('.income-amount').value = ''; 
-        });
-        expensesItems.forEach( (item) => {
-            item.querySelector('.expenses-title').value = '';
-            item.querySelector('.expenses-amount').value = '';  
-        });
-        depositPercent.value = '';
-        depositAmount.value = '';
-    }
-    deletingDataInTheOutputField() {
-        budgetMonthValue.value = '';
-        budgetDayValue.value = '';
-        expensesMonthValue.value = '';
-        additionalIncomeValue.value = '';
-        additionalExpensesValue.value = '';
-        incomePeriodValue.value = '';
-        targetMonthValue.value = '';
+
+        equateAppDataToLocalStorage();
+        appDataUpdateToLocalStorage();
     }
     zeroingAllObjectVariables() {
         this.budget = 0;
@@ -200,15 +234,15 @@ class AppData {
         this.moneyDeposit = 0;
     }
     reset() {
-        this.unlockDataEntry();
-        this.clearingDataFromInputFields();
-        this.deletingDataInTheOutputField();
+        unlockDataEntry();
+        clearingDataFromInputFields();
+        deletingDataInTheOutputField();
         this.zeroingAllObjectVariables();
         this.availableOrUnavailableButton();
     }
     addPeriodBlock() {
         periodAmount.innerHTML = periodSelect.value;
-        incomePeriodValue.value = appData.calcSavedMoney(); // appData
+        incomePeriodValue.value = this.calcSavedMoney(); 
     }
     getExpensesAndIncome() {
         const count = item => {
@@ -266,7 +300,7 @@ class AppData {
         targetMonthValue.value = this.getTargetMonth();
         incomePeriodValue.value = this.calcSavedMoney();
     
-        periodSelect.addEventListener('input', this.addPeriodBlock);
+        periodSelect.addEventListener('input', this.addPeriodBlock.bind(this));
     }
     getExpensesMonth() {
         for (const key in this.expenses) {
@@ -323,14 +357,14 @@ class AppData {
             depositAmount.style.display = 'inline-block';
             depositBank.value = '';
             this.deposit = true;
-            depositBank.addEventListener('change', appData.changePercent);
+            depositBank.addEventListener('change', this.changePercent);
         } else {
             depositBank.style.display = 'none';
             depositAmount.style.display = 'none';
             depositBank.value = '';
             depositAmount.value = '';
             this.deposit = false;
-            depositBank.removeEventListener('change', appData.changePercent);
+            depositBank.removeEventListener('change', this.changePercent);
         }
     }
     inputCheckIncomeTitles() {
@@ -381,12 +415,13 @@ class AppData {
             this.start();
         });
         reset.addEventListener('click', () => {
+            appDataDeleteLocalStorage();
             reset.style.display = 'none';
             calculate.style.display = 'block';
             this.reset();
         });
         
-        depositCheck.addEventListener('change', this.depositHandler);
+        depositCheck.addEventListener('change', this.depositHandler.bind(this));
         
         buttonExpensesAdd.addEventListener('click', () => {
             this.addExpensesAndIncomeBlock(expensesItems, buttonExpensesAdd);
